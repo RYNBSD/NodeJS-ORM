@@ -74,7 +74,7 @@ const db = new DataBase({
   .addTable(postsTable);
 
 function randomNumber(start = 1, end?: number) {
-  if (end) return Math.floor(start + (Date.now() % end));
+  if (end) return Math.floor(start + (Date.now() % (end - start)));
   return (start || 1) * Date.now() * Math.random();
 }
 
@@ -104,7 +104,7 @@ function sleep(second: number) {
   await Promise.all(
     Array.from({ length: randomNumber(1, 100) }, (_, i) =>
       db.insert("posts", {
-        title: `title ${randomNumber(1)}`,
+        title: `title ${randomNumber(i)}`,
         description: `description ${randomNumber(i)}`,
         userId: usersId[Math.floor(usersId.length * Math.random())],
       })
@@ -135,7 +135,7 @@ function sleep(second: number) {
     Array.from({ length: randomNumber(1, 100) }, (_, i) =>
       db.update("posts", {
         sets: {
-          title: `title ${randomNumber(1)}`,
+          title: `title ${randomNumber(i)}`,
           description: `description ${randomNumber(i)}`,
         },
         where: [

@@ -1,5 +1,10 @@
 import mysql from "mysql";
-import type { Prettier, SQLOperations, SQLOrderBy } from "./types/index.js";
+import type {
+  Prettier,
+  SQLOperations,
+  SQLOrderBy,
+  SQLWhere,
+} from "./types/index.js";
 import type { ColumnDefaultSchema } from "./column.js";
 import Table, {
   type TableColumnsNameInfer,
@@ -39,7 +44,8 @@ export type DataBaseSelectOptions<Table extends TableDefaultSchema> = {
   where?: [
     columnName: TableColumnsNameInfer<Table>,
     operation: SQLOperations,
-    value: any
+    value: any,
+    join?: SQLWhere
   ][];
   orderBy?: [columnName: TableColumnsNameInfer<Table>, operation: SQLOrderBy][];
   groupBy?: TableColumnsNameInfer<Table>[];
@@ -55,7 +61,8 @@ export type DataBaseUpdateOptions<Table extends TableDefaultSchema> = {
   where?: [
     columnName: TableColumnsNameInfer<Table>,
     operation: SQLOperations,
-    operation: any
+    value: any,
+    join?: SQLWhere
   ][];
 };
 
@@ -63,7 +70,8 @@ export type DataBaseDeleteOptions<Table extends TableDefaultSchema> = {
   where?: [
     columnName: TableColumnsNameInfer<Table>,
     operation: SQLOperations,
-    operation: any
+    value: any,
+    join?: SQLWhere
   ][];
 };
 
@@ -180,9 +188,12 @@ export default class DataBase<T extends TableDefaultSchema = never> {
 
     if (where.length > 0) {
       const conditions = where.map(
-        (params) => `${params[0]} ${params[1]} ${mysql.escape(params[2])}`
+        (params) =>
+          `${params[0]} ${params[1]} ${mysql.escape(params[2])} ${
+            params[3] ? params[3] : ""
+          }`
       );
-      sql.push(`WHERE ${conditions.join(" AND ")}`);
+      sql.push(`WHERE ${conditions.join(" ")}`);
     }
 
     if (orderBy.length > 0) {
@@ -218,9 +229,12 @@ export default class DataBase<T extends TableDefaultSchema = never> {
 
     if (where.length > 0) {
       const conditions = where.map(
-        (params) => `${params[0]} ${params[1]} ${mysql.escape(params[2])}`
+        (params) =>
+          `${params[0]} ${params[1]} ${mysql.escape(params[2])} ${
+            params[3] ? params[3] : ""
+          }`
       );
-      sql.push(`WHERE ${conditions.join(" AND ")}`);
+      sql.push(`WHERE ${conditions.join(" ")}`);
     }
 
     await this.query({ sql: sql.join(" ") });
@@ -259,9 +273,12 @@ export default class DataBase<T extends TableDefaultSchema = never> {
 
     if (where.length > 0) {
       const conditions = where.map(
-        (params) => `${params[0]} ${params[1]} ${mysql.escape(params[2])}`
+        (params) =>
+          `${params[0]} ${params[1]} ${mysql.escape(params[2])} ${
+            params[3] ? params[3] : ""
+          }`
       );
-      sql.push(`WHERE ${conditions.join(" AND ")}`);
+      sql.push(`WHERE ${conditions.join(" ")}`);
     }
 
     await this.query({ sql: sql.join(" ") });

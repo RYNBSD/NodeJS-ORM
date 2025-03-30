@@ -27,3 +27,5 @@ export type SQLOperations =
   | ">"
   | "<"
   | (string & {});
+
+export type SQLWhere = "AND" | "OR";
