@@ -82,13 +82,9 @@ export default class Table<
       : "";
 
     return options.foreignKey
-      ? columnSQL +
-          "," +
-          `FOREIGN KEY (${column.getColumnName}) REFERENCES ${
-            options.foreignKey.table
-          }(${options.foreignKey.column}) ${
-            cascade ? `${cascade} CASCADE` : ""
-          }`
+      ? `${columnSQL},FOREIGN KEY (${column.getColumnName}) REFERENCES ${
+          options.foreignKey.table
+        }(${options.foreignKey.column}) ${cascade ? `${cascade} CASCADE` : ""}`
       : columnSQL;
   }
 

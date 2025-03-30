@@ -39,7 +39,7 @@ export type DataBaseSelectOptions<Table extends TableDefaultSchema> = {
   where?: [
     columnName: TableColumnsNameInfer<Table>,
     operation: SQLOperations,
-    operation: any
+    value: any
   ][];
   orderBy?: [columnName: TableColumnsNameInfer<Table>, operation: SQLOrderBy][];
   groupBy?: TableColumnsNameInfer<Table>[];
@@ -182,7 +182,7 @@ export default class DataBase<T extends TableDefaultSchema = never> {
       const conditions = where.map(
         (params) => `${params[0]} ${params[1]} ${mysql.escape(params[2])}`
       );
-      sql.push(`WHERE ${conditions.join(",")}`);
+      sql.push(`WHERE ${conditions.join(" AND ")}`);
     }
 
     if (orderBy.length > 0) {
@@ -220,7 +220,7 @@ export default class DataBase<T extends TableDefaultSchema = never> {
       const conditions = where.map(
         (params) => `${params[0]} ${params[1]} ${mysql.escape(params[2])}`
       );
-      sql.push(`WHERE ${conditions.join(",")}`);
+      sql.push(`WHERE ${conditions.join(" AND ")}`);
     }
 
     await this.query({ sql: sql.join(" ") });
@@ -261,7 +261,7 @@ export default class DataBase<T extends TableDefaultSchema = never> {
       const conditions = where.map(
         (params) => `${params[0]} ${params[1]} ${mysql.escape(params[2])}`
       );
-      sql.push(`WHERE ${conditions.join(",")}`);
+      sql.push(`WHERE ${conditions.join(" AND ")}`);
     }
 
     await this.query({ sql: sql.join(" ") });
