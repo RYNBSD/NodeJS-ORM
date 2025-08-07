@@ -249,7 +249,7 @@ export default class DataBase<T extends TableDefaultSchema = never> {
     const columns: string[] = [];
     const values: any[] = [];
 
-    Object.entries(options as object).forEach(([key, value]) => {
+    Object.entries(options).forEach(([key, value]) => {
       columns.push(key);
       values.push(mysql.escape(value));
     });
