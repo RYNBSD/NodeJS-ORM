@@ -222,7 +222,7 @@ export default class DataBase<T extends TableDefaultSchema = never> {
   ) {
     const sql = [`UPDATE ${tableName}`];
 
-    const updates = Object.entries(sets as object)
+    const updates = Object.entries(sets)
       .map(([key, value]) => `${key}=${mysql.escape(value)}`)
       .join(",");
     sql.push(`SET ${updates}`);
