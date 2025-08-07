@@ -1,3 +1,5 @@
+import crypto from "node:crypto";
+import timers from "node:timers/promises";
 import Column from "./column";
 import DataBase from "./db";
 import Table from "./table";
@@ -73,54 +75,45 @@ const db = new DataBase({
   .addTable(usersTable)
   .addTable(postsTable);
 
-function randomNumber(start = 1, end?: number) {
-  if (end) return Math.floor(start + (Date.now() % (end - start)));
-  return (start || 1) * Date.now() * Math.random();
-}
-
-function sleep(second: number) {
-  return new Promise((resolve) => setTimeout(resolve, second * 1000));
-}
-
 (async () => {
   await db.connect();
   await db.createTables();
 
   await Promise.all(
-    Array.from({ length: randomNumber(1, 100) }, (_, i) =>
+    Array.from({ length: crypto.randomInt(1, 100) }, (_, i) =>
       db.insert("users", {
-        username: `username ${randomNumber(i)}`,
-        email: `email ${randomNumber(i)}`,
-        password: `password ${randomNumber(1)}`,
+        username: `username ${crypto.randomInt(i)}`,
+        email: `email ${crypto.randomInt(i)}`,
+        password: `password ${crypto.randomInt(1)}`,
       })
     )
   );
 
-  await sleep(1);
+  await timers.setTimeout(1000);
 
   const usersIdQuery = await db.select("users", { columns: ["id"] });
   const usersId = usersIdQuery.map((u) => u.id);
 
   await Promise.all(
-    Array.from({ length: randomNumber(1, 100) }, (_, i) =>
+    Array.from({ length: crypto.randomInt(1, 100) }, (_, i) =>
       db.insert("posts", {
-        title: `title ${randomNumber(i)}`,
-        description: `description ${randomNumber(i)}`,
+        title: `title ${crypto.randomInt(i)}`,
+        description: `description ${crypto.randomInt(i)}`,
         userId: usersId[Math.floor(usersId.length * Math.random())],
       })
     )
   );
 
-  await sleep(1);
+  await timers.setTimeout(1000);
 
   const postsIdQuery = await db.select("posts", { columns: ["id"] });
   const postsId = postsIdQuery.map((u) => u.id);
 
   await Promise.all(
-    Array.from({ length: randomNumber(1, 100) }, (_, i) =>
+    Array.from({ length: crypto.randomInt(1, 100) }, (_, i) =>
       db.update("users", {
         sets: {
-          username: `username ${randomNumber(i)}`,
+          username: `username ${crypto.randomInt(i)}`,
         },
         where: [
           ["id", "=", usersId[Math.floor(usersId.length * Math.random())]],
@@ -129,14 +122,14 @@ function sleep(second: number) {
     )
   );
 
-  await sleep(1);
+  await timers.setTimeout(1000);
 
   await Promise.all(
-    Array.from({ length: randomNumber(1, 100) }, (_, i) =>
+    Array.from({ length: crypto.randomInt(1, 100) }, (_, i) =>
       db.update("posts", {
         sets: {
-          title: `title ${randomNumber(i)}`,
-          description: `description ${randomNumber(i)}`,
+          title: `title ${crypto.randomInt(i)}`,
+          description: `description ${crypto.randomInt(i)}`,
         },
         where: [
           ["id", "=", postsId[Math.floor(postsId.length * Math.random())]],
@@ -145,10 +138,10 @@ function sleep(second: number) {
     )
   );
 
-  await sleep(1);
+  await timers.setTimeout(1000);
 
   await Promise.all(
-    Array.from({ length: randomNumber(1, 100) }, () =>
+    Array.from({ length: crypto.randomInt(1, 100) }, () =>
       db.delete("users", {
         where: [
           ["id", "=", usersId[Math.floor(usersId.length * Math.random())]],
@@ -157,10 +150,10 @@ function sleep(second: number) {
     )
   );
 
-  await sleep(1);
+  await timers.setTimeout(1000);
 
   await Promise.all(
-    Array.from({ length: randomNumber(1, 100) }, () =>
+    Array.from({ length: crypto.randomInt(1, 100) }, () =>
       db.delete("posts", {
         where: [
           ["id", "=", postsId[Math.floor(postsId.length * Math.random())]],
@@ -169,7 +162,7 @@ function sleep(second: number) {
     )
   );
 
-  await sleep(1);
+  await timers.setTimeout(1000);
 
   await db.disconnect();
 })();
